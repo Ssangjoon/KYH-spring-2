@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -169,8 +170,13 @@ public class ValidationItemControllerV2 {
         errorArgs : 오류 메시지에서 {0} 을 치환하기 위한 값
         defaultMessage : 오류 메시지를 찾을 수 없을 때 사용하는 기본 메시지
         */
+
         if (!StringUtils.hasText(item.getItemName())) {
             bindingResult.rejectValue("itemName", "required");
+//            1. rejectValue() 호출
+//            2. MessageCodesResolver 를 사용해서 검증 오류 코드로 메시지 코드들을 생성
+//            3. new FieldError() 를 생성하면서 메시지 코드들을 보관
+//            4. th:erros 에서 메시지 코드들로 메시지를 순서대로 메시지에서 찾고, 노출
         }
         if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
             bindingResult.rejectValue("price", "range", new Object[]{1000, 1000000},null);
@@ -186,7 +192,20 @@ public class ValidationItemControllerV2 {
             }
         }
         /*rejectValue() 를 사용하고 부터는 오류 코드를 range 로 간단하게 입력했다. 그래도 오류 메시지를 잘 찾아서 출
-        력한다. 무언가 규칙이 있는 것 처럼 보인다. 이 부분을 이해하려면 MessageCodesResolver 를 이해해야 한다.*/
+        력한다. 무언가 규칙이 있는 것 처럼 보인다. 이 부분을 이해하려면 MessageCodesResolver 를 이해해야 한다.
+        => MessageCodesResolverTest 참고해보자
+        */
+
+        /*핵심은 구체적인 것에서! 덜 구체적인 것으로!
+          MessageCodesResolver 는 required.item.itemName 처럼 구체적인 것을 먼저 만들어주고, required 처럼
+          덜 구체적인 것을 가장 나중에 만든다. 이렇게 하면 앞서 말한 것 처럼 메시지와 관련된 공통 전략을 편리하게 도입할 수 있다.
+
+          왜 이렇게 복잡하게 사용하는가?
+          모든 오류 코드에 대해서 메시지를 각각 다 정의하면 개발자 입장에서 관리하기 너무 힘들다.
+          크게 중요하지 않은 메시지는 범용성 있는 requried 같은 메시지로 끝내고, 정말 중요한 메시지는 꼭 필요할 때 구체적으로
+          적어서 사용하는 방식이 더 효과적이다.
+          => errors.properties 를 참고해보자.
+          */
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "validation/v2/addForm";
