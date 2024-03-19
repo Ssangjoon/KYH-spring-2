@@ -74,6 +74,17 @@ public class ValidationItemControllerV3 {
         // 2. 애노테이션의 message 속성 사용 @NotBlank(message = "공백! {0}")
         // 3. 라이브러리가 제공하는 기본 값 사용.
 
+
+        // 특정 필드 예외가 아닌 전체 예외
+        // 오브젝트 오류(글로벌 오류)의 경우 @ScriptAssert 을 억지로 사용하는 것 보다는
+        // 관련 부분만 직접 자바 코드로 작성하는 것을 권장한다.
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.reject("totalPriceMin", new Object[]{10000,resultPrice}, null);
+            }
+        }
+
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "validation/v3/addForm";
