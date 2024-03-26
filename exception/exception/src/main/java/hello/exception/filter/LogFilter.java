@@ -1,4 +1,4 @@
-package hello.exception;
+package hello.exception.filter;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
