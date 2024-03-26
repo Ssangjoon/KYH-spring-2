@@ -32,6 +32,8 @@ public class ErrorPageController {
         log.info("ERROR_MESSAGE: {}", request.getAttribute(ERROR_MESSAGE));
         log.info("ERROR_REQUEST_URI: {}", request.getAttribute(ERROR_REQUEST_URI));
         log.info("ERROR_SERVLET_NAME: {}", request.getAttribute(ERROR_SERVLET_NAME));
+        // 서블릿 스펙은 실제 고객이 요청한 것인지, 서버가 내부에서 오류 페이지를 요청하는 것인지
+        // DispatcherType 으로 구분할 수 있는 방법을 제공한다
         log.info("dispatchType={}", request.getDispatcherType());
     }
 }
