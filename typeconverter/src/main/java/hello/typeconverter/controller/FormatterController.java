@@ -28,6 +28,7 @@ public class FormatterController {
 
     @Data
     static class Form{
+        // https://docs.spring.io/spring-framework/reference/core/validation/format.html#format-CustomFormatAnnotations
         @NumberFormat(pattern = "###,###")
         private Integer number;
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
