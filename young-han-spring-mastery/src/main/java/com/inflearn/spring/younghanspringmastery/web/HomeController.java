@@ -1,7 +1,7 @@
 package com.inflearn.spring.younghanspringmastery.web;
 
 import com.inflearn.spring.younghanspringmastery.domain.member.Member;
-import com.inflearn.spring.younghanspringmastery.web.argumentresolver.Login;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
